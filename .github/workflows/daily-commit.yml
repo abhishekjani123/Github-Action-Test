@@ -1,0 +1,26 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: '55 23 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make multiple commits
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          for i in {1..10}; do
+            echo "$(date -u) - commit $i" >> log.txt
+            git add log.txt
+            git commit -m "daily: $(date -u +'%Y-%m-%d') [$i]"
+          done
+          git push
